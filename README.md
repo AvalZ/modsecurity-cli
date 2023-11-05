@@ -11,8 +11,9 @@ To run modsecurity-cli, you will need a few setup steps.
 ### Setup
 
 1. Compile ModSecurity v3.0.10
-2. Install pymodsecurity
-2. Clone the [OWASP CoreRuleSet](https://github.com/coreruleset/coreruleset) (or any other rule set)
+1. Install pymodsecurity
+1. Clone the [OWASP CoreRuleSet](https://github.com/coreruleset/coreruleset) (or any other rule set)
+1. Run the CLI!
 
 Here's the detail for each step.
 
@@ -28,6 +29,27 @@ Current workaround: clone [our fork](https://github.com/AvalZ/pymodsecurity) and
 
 ```
 python3 setup.py install
+```
+
+### Clone the OWASP CoreRuleSet
+
+Just run a clone in this folder
+```
+git clone git@github.com:coreruleset/coreruleset.git
+```
+
+### Run the CLI!
+
+Check ModSecurity version
+
+```
+python3 main.py version
+```
+
+Evaluate a single payload  ModSecurity version
+
+```
+python3 main.py evaluate "<script>alert(1)</script>" --verbose
 ```
 
 ## TODOs
