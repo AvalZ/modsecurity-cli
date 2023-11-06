@@ -11,39 +11,6 @@ from typing_extensions import Annotated
 
 app = typer.Typer()
 
-class MatchedRule:
-    def __init__(self, rule_message):
-        # TODO add more fields from the RuleMessage class
-        self.rule_id = rule_message.m_ruleId
-        self.severity = rule_message.m_severity
-        self.tags = rule_message.m_tags
-
-
-
-class RulesLogger:
-    def __init__(self, debug=False):
-        self._rules_triggered = []
-        self._debug = debug
-        self._score = 0
-
-    def __call__(self, data, rule_message):
-        if self._debug:
-            print("[!] Rule {} matched - Message: {}, Phase: {}, Severity: {}".format(
-                rule_message.m_ruleId, rule_message.m_message, rule_message.m_phase,
-                rule_message.m_severity))
-
-        if rule_message.m_ruleId == 949110:
-            self._score = float(re.findall(r"\(Total Score: (\d+)\)", str(rule_message.m_message))[0])
-        if str(rule_message.m_ruleId) not in self._rules_triggered:
-            self._rules_triggered.append(MatchedRule(rule_message))
-
-    def get_rules(self):
-        return self._rules_triggered
-
-    def get_score(self):
-        return self._score
-
-
 @app.command()
 def version():
     modsec = ModSecurity()
@@ -64,22 +31,27 @@ def evaluate(payload: str,
     for rule_path in glob.glob('coreruleset/rules/*.conf'):
         rules.loadFromUri(rule_path)
 
-    rules_logger = RulesLogger(debug=verbose)
-    modsec.setServerLogCb2(rules_logger, LogProperty.RuleMessageLogProperty)
-
     transaction = Transaction(modsec, rules)
     transaction.processURI(full_url, "GET", "2.0")
     transaction.addRequestHeader("Host", parsed_url.netloc) # Avoid matching rule 920280
     transaction.processRequestHeaders()
     transaction.processRequestBody()
 
-    print("Total Score (from rule 949110)", rules_logger.get_score())
+    matched_rules = { m.m_ruleId:m for m in transaction.m_rulesMessages}
+    print(transaction.m_rulesMessages)
+    print([ rule.m_ruleId for rule in transaction.m_rulesMessages])
+    print([ rule.m_severity for rule in transaction.m_rulesMessages])
+    print([ rule.m_message for rule in transaction.m_rulesMessages])
 
-    matched_rules = { r.rule_id: r.severity for r in rules_logger.get_rules()}
+    print("Total Score (from rule 949110)", matched_rules[949110].m_message.split(":")[-1].strip(" )"))
+
     # print(matched_rules)
-    print("Total Score (from matched rules)", sum(matched_rules.values()))
+    print("Total Score (from matched rules)", sum([ rule.m_severity for rule in matched_rules.values()]))
     if verbose:
         print("Matched rules:", list(matched_rules.keys()))
+
+    
+
 
     # TODO get rules scores based on paranoia level, using tags
     #  - This could be handled via modsecurity configuration
