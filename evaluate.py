@@ -60,9 +60,8 @@ def parameter(payload: str,
     # Load basic conf
     for config in configs:
         rules.loadFromUri(config)
-    
 
-    # Load CRS
+    # Load rules
     for rule_path in glob.glob(f"{rules_path}/*.conf"):
         rules.loadFromUri(rule_path)
 
@@ -92,16 +91,6 @@ def parameter(payload: str,
 
     total_score = sum([ rule.m_severity for rule in transaction.m_rulesMessages if get_paranoia_level(rule) <= paranoia_level])
     print(total_score)
-    return total_score
-
-    # TODO get rules scores based on paranoia level, using tags
-    #  - This could be handled via modsecurity configuration
-    #  - If we handle it here, we need to match all tags >= the set paranoia level
-    # print([tag for r in rules_logger.get_rules() for tag in r.tags])
-    # print({ r.rule_id: r.severity for r in rules_logger.get_rules() if 'paranoia-level/2' in r.tags})
-    # print(sum(r.severity for r in rules_logger.get_rules() if 'paranoia-level/2' in r.tags))
-
-
 
 if __name__ == "__main__":
     app()
