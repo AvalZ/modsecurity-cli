@@ -41,16 +41,15 @@ def version():
 
 @app.command()
 def evaluate(payload: str,
+            base_uri: Annotated[str, typer.Option(help="Base URI for payload evaluation")] = "http://www.modsecurity.org/test",
             verbose: Annotated[bool, typer.Option(help="Print matched rules with associated scores")] = False,
-            show_logs: Annotated[bool, typer.Option(help="Print libmodsecurity server logs")] = True):
+            logs: Annotated[bool, typer.Option(help="Print libmodsecurity server logs")] = False):
     modsec = ModSecurity()
 
-    if not show_logs:
+    if not logs:
         # disable logs
         modsec.setServerLogCb2(lambda x, y: None, LogProperty.RuleMessageLogProperty)
 
-    # FIXME temporary workaround for base URLs
-    base_uri = "http://www.modsecurity.org/test"
     encoded_query = urlencode({"q": payload})
     full_url = f"{base_uri}?{encoded_query}"
     parsed_url = urlparse(full_url)
@@ -76,7 +75,7 @@ def evaluate(payload: str,
     if verbose:
         print("# Matched rules")
         print()
-        print("\n".join([ f" - {rule.m_ruleId}#{rule.m_ruleLine}\t[+{Severity(rule.m_severity).score}]\t- {rule.m_message}" for rule in transaction.m_rulesMessages]))
+        print("\n".join([ f" - {rule.m_ruleId} [+{Severity(rule.m_severity).score}]\t- {rule.m_message}" for rule in transaction.m_rulesMessages]))
 
     # print("Total Score (from rule 949110)", matched_rules[949110].m_message.split(":")[-1].strip(" )"))
 
