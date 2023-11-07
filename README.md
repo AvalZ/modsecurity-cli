@@ -46,10 +46,10 @@ Check ModSecurity version
 python3 main.py version
 ```
 
-Evaluate a single payload  ModSecurity version
+Evaluate a single parameter
 
 ```
-python3 main.py evaluate "<script>alert(1)</script>" --verbose
+python3 main.py evaluate parameter "<script>alert(1)</script>" -v
 ```
 
 ## TODOs
