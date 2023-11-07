@@ -52,6 +52,11 @@ Evaluate a single parameter
 python3 main.py evaluate parameter "<script>alert(1)</script>" -v
 ```
 
+You can set a specific Paranoia Level for your evaluation (default is `1`)
+```
+python3 main.py evaluate parameter "<script>alert(1)</script>" -v -PL 2
+```
+
 ## TODOs
 
 This CLI wrapper is still under development, so you might not find some features that are interesting to you just yet.
@@ -61,11 +66,11 @@ Here's the list of our current and future steps:
  - [x] ModSecurity from CLI
  - [x] Import all rules in a folder
  - [x] Support GET parameters evaluation
- - [ ] Full URI evaluation
- - [ ] Score based on Paranoia Level (currently runs all rules)
- - [ ] Support POST request evaluation
  - [x] Support Request Header evaluation
  - [x] Set default config to avoid matching [rule 901001](https://github.com/coreruleset/coreruleset/blob/v4.0/dev/rules/REQUEST-901-INITIALIZATION.conf#L54-L63)
+ - [x] Score based on Paranoia Level (basic config uses PL/4, then we filter on a given PL - default: 1)
+ - [ ] Full URI evaluation
+ - [ ] Support POST request evaluation
 
 If you want to contribute by adding something from the list, PRs are welcome :D
 

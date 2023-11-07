@@ -33,10 +33,14 @@ class Severity(Enum):
   INFO      = 6, 0 # not used in CRS
   DEBUG     = 7, 0 # not used in CRS
 
+def get_paranoia_level(rule):
+    return next((int(tag.split('/')[1]) for tag in rule.m_tags if 'paranoia-level' in tag), 1)
+
 @app.command()
 def parameter(payload: str,
             base_uri: Annotated[str, typer.Option(help="Base URI for payload evaluation")] = "http://www.modsecurity.org/test",
             headers: Annotated[List[str], typer.Option('-H', '--header', help="List of headers")] = [],
+            paranoia_level: Annotated[int, typer.Option('-PL', '--paranoia-level', help="Paranoia Level")] = 1,
             configs: Annotated[List[str], typer.Option('--config', help="List of additional configuration files (loaded BEFORE rules")] = ['conf/modsecurity.conf', 'conf/crs-setup.conf'],
             rules_path: Annotated[str, typer.Option('--rules', help="Rules location")] = 'coreruleset/rules',
             verbose: Annotated[bool, typer.Option('-v', '--verbose', help="Print matched rules with associated scores")] = False,
@@ -72,16 +76,21 @@ def parameter(payload: str,
     transaction.processRequestHeaders()
     transaction.processRequestBody()
 
-    matched_rules = { m.m_ruleId:m for m in transaction.m_rulesMessages}
+    # Decorate RuleMessages
+    for rule in transaction.m_rulesMessages:
+        rule.m_severity = Severity(rule.m_severity).score
+
     if verbose:
         print("# Matched rules")
         print()
-        print("\n".join([ f" - {rule.m_ruleId} [+{Severity(rule.m_severity).score}]\t- {rule.m_message}" for rule in transaction.m_rulesMessages]))
+        for rule in transaction.m_rulesMessages:
+            print(' + ' if get_paranoia_level(rule) <= paranoia_level else ' - ', end='')
+            print(f" {rule.m_ruleId} [+{rule.m_severity}/PL{get_paranoia_level(rule)}] - {rule.m_message}")
 
     if verbose:
         print("\nTotal Score (from matched rules): ", end="")
 
-    total_score = sum([ Severity(rule.m_severity).score for rule in transaction.m_rulesMessages])
+    total_score = sum([ rule.m_severity for rule in transaction.m_rulesMessages if get_paranoia_level(rule) <= paranoia_level])
     print(total_score)
     return total_score
 
