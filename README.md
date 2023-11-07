@@ -64,8 +64,8 @@ Here's the list of our current and future steps:
  - [ ] Full URI evaluation
  - [ ] Score based on Paranoia Level (currently runs all rules)
  - [ ] Support POST request evaluation
- - [ ] Support Request Header evaluation
- - [ ] Set default config to avoid matching [rule 901001](https://github.com/coreruleset/coreruleset/blob/v4.0/dev/rules/REQUEST-901-INITIALIZATION.conf#L54-L63)
+ - [x] Support Request Header evaluation
+ - [x] Set default config to avoid matching [rule 901001](https://github.com/coreruleset/coreruleset/blob/v4.0/dev/rules/REQUEST-901-INITIALIZATION.conf#L54-L63)
 
 If you want to contribute by adding something from the list, PRs are welcome :D
 
