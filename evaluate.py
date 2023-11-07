@@ -38,6 +38,7 @@ def parameter(payload: str,
             base_uri: Annotated[str, typer.Option(help="Base URI for payload evaluation")] = "http://www.modsecurity.org/test",
             headers: Annotated[List[str], typer.Option('-H', '--header', help="List of headers")] = [],
             configs: Annotated[List[str], typer.Option('--config', help="List of additional configuration files (loaded BEFORE rules")] = ['conf/modsecurity.conf', 'conf/crs-setup.conf'],
+            rules_path: Annotated[str, typer.Option('--rules', help="Rules location")] = 'coreruleset/rules',
             verbose: Annotated[bool, typer.Option('-v', '--verbose', help="Print matched rules with associated scores")] = False,
             logs: Annotated[bool, typer.Option(help="Print libmodsecurity server logs")] = False):
     modsec = ModSecurity()
@@ -58,7 +59,7 @@ def parameter(payload: str,
     
 
     # Load CRS
-    for rule_path in glob.glob('coreruleset/rules/*.conf'):
+    for rule_path in glob.glob(f"{rules_path}/*.conf"):
         rules.loadFromUri(rule_path)
 
     transaction = Transaction(modsec, rules)
