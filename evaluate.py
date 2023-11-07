@@ -37,6 +37,7 @@ class Severity(Enum):
 def parameter(payload: str,
             base_uri: Annotated[str, typer.Option(help="Base URI for payload evaluation")] = "http://www.modsecurity.org/test",
             headers: Annotated[List[str], typer.Option('-H', '--header', help="List of headers")] = [],
+            configs: Annotated[List[str], typer.Option('--config', help="List of additional configuration files (loaded BEFORE rules")] = ['conf/modsecurity.conf', 'conf/crs-setup.conf'],
             verbose: Annotated[bool, typer.Option('-v', '--verbose', help="Print matched rules with associated scores")] = False,
             logs: Annotated[bool, typer.Option(help="Print libmodsecurity server logs")] = False):
     modsec = ModSecurity()
@@ -52,8 +53,8 @@ def parameter(payload: str,
     rules = RulesSet()
 
     # Load basic conf
-    rules.loadFromUri("conf/modsecurity.conf")
-    rules.loadFromUri("conf/crs-setup.conf")
+    for config in configs:
+        rules.loadFromUri(config)
     
 
     # Load CRS
