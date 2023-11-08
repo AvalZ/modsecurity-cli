@@ -7,7 +7,7 @@ import re
 import glob
 from urllib.parse import urlparse, urlencode
 import typer
-from typing import List
+from typing import List, Optional
 from typing_extensions import Annotated
 from enum import Enum
 
@@ -40,6 +40,7 @@ def get_paranoia_level(rule):
 def parameter(payload: str,
             base_uri: Annotated[str, typer.Option(help="Base URI for payload evaluation")] = "http://www.modsecurity.org/test",
             headers: Annotated[List[str], typer.Option('-H', '--header', help="List of headers")] = [],
+            request_body: Optional[typer.FileText] = typer.Argument(None),
             paranoia_level: Annotated[int, typer.Option('-PL', '--paranoia-level', help="Paranoia Level")] = 1,
             configs: Annotated[List[str], typer.Option('--config', help="List of additional configuration files (loaded BEFORE rules")] = ['conf/modsecurity.conf', 'conf/crs-setup.conf'],
             rules_path: Annotated[str, typer.Option('--rules', help="Rules location")] = 'coreruleset/rules',
@@ -66,13 +67,20 @@ def parameter(payload: str,
         rules.loadFromUri(rule_path)
 
     transaction = Transaction(modsec, rules)
+
+    # URI
     transaction.processURI(full_url, "GET", "2.0")
     
+    # Headers
     headers.append(f"Host: {parsed_url.netloc}") # Avoid matching rule 920280
     for header in headers:
         name, value = header.split(':')
         transaction.addRequestHeader(name, value.strip()) # Avoid matching rule 920280
     transaction.processRequestHeaders()
+
+    # Body
+    if request_body:
+        transaction.appendRequestBody(request_body.read())
     transaction.processRequestBody()
 
     # Decorate RuleMessages

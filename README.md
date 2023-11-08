@@ -69,8 +69,8 @@ Here's the list of our current and future steps:
  - [x] Support Request Header evaluation
  - [x] Set default config to avoid matching [rule 901001](https://github.com/coreruleset/coreruleset/blob/v4.0/dev/rules/REQUEST-901-INITIALIZATION.conf#L54-L63)
  - [x] Score based on Paranoia Level (basic config uses PL/4, then we filter on a given PL - default: 1)
+ - [x] Support POST request evaluation
  - [ ] Full URI evaluation
- - [ ] Support POST request evaluation
 
 If you want to contribute by adding something from the list, PRs are welcome :D
 
