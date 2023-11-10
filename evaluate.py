@@ -37,10 +37,13 @@ def get_paranoia_level(rule):
     return next((int(tag.split('/')[1]) for tag in rule.m_tags if 'paranoia-level' in tag), 1)
 
 @app.command()
-def parameter(payload: str,
+def parameter(
+            payloads: Annotated[List[str], typer.Argument()],
+            keys: Annotated[List[str], typer.Option('-k', '--key', help="List of key for parameters (must match the number of payloads)")] = [],
+            request_body: Annotated[typer.FileBinaryRead, typer.Option(help="Request Body file")] = None,
             base_uri: Annotated[str, typer.Option(help="Base URI for payload evaluation")] = "http://www.modsecurity.org/test",
+            method: Annotated[str, typer.Option(help="Method")] = "",
             headers: Annotated[List[str], typer.Option('-H', '--header', help="List of headers")] = [],
-            request_body: Optional[typer.FileText] = typer.Argument(None),
             paranoia_level: Annotated[int, typer.Option('-PL', '--paranoia-level', help="Paranoia Level")] = 1,
             configs: Annotated[List[str], typer.Option('--config', help="List of additional configuration files (loaded BEFORE rules")] = ['conf/modsecurity.conf', 'conf/crs-setup.conf'],
             rules_path: Annotated[str, typer.Option('--rules', help="Rules location")] = 'coreruleset/rules',
@@ -49,10 +52,16 @@ def parameter(payload: str,
     modsec = ModSecurity()
 
     if not logs:
-        # disable logs
+        # disable ModSecurity callback logs
         modsec.setServerLogCb2(lambda x, y: None, LogProperty.RuleMessageLogProperty)
 
-    encoded_query = urlencode({"q": payload})
+    if not method:
+        method = 'POST' if request_body else 'GET'
+
+    if not keys:
+        keys = ['q']
+
+    encoded_query = urlencode(dict(zip(keys, payloads)))
     full_url = f"{base_uri}?{encoded_query}"
     parsed_url = urlparse(full_url)
 
@@ -69,7 +78,9 @@ def parameter(payload: str,
     transaction = Transaction(modsec, rules)
 
     # URI
-    transaction.processURI(full_url, "GET", "2.0")
+    if verbose:
+        print(method, full_url)
+    transaction.processURI(full_url, method, "2.0")
     
     # Headers
     headers.append(f"Host: {parsed_url.netloc}") # Avoid matching rule 920280
@@ -78,9 +89,12 @@ def parameter(payload: str,
         transaction.addRequestHeader(name, value.strip()) # Avoid matching rule 920280
     transaction.processRequestHeaders()
 
+    
     # Body
     if request_body:
-        transaction.appendRequestBody(request_body.read())
+        body = request_body.read().decode('utf-8')
+        transaction.appendRequestBody(body)
+        print(body)
     transaction.processRequestBody()
 
     # Decorate RuleMessages
@@ -88,6 +102,7 @@ def parameter(payload: str,
         rule.m_severity = Severity(rule.m_severity).score
 
     if verbose:
+        print()
         print("# Matched rules")
         print()
         for rule in transaction.m_rulesMessages:
