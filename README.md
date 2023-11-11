@@ -13,7 +13,7 @@ To run `modsecurity-cli`, you will need a few setup steps.
 
 1. [Compile and Install ModSecurity v3.0.10](#compile-modsecurity-v3010)
 1. [Install pymodsecurity](#install-pymodsecurity)
-1. [Clone the OWASP CoreRuleSet](clone-the-owasp-coreruleset)
+1. [Clone the OWASP CoreRuleSet](#clone-the-owasp-coreruleset)
 1. [Run the CLI!](#run-the-cli)
 
 Here's the detail for each step.
