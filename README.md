@@ -1,8 +1,8 @@
 # ModSecurity CLI
 
-A CLI wrapper for libmodsecurity to quickly test payloads against Rules.
+A CLI wrapper for libmodsecurity to quickly test payloads against Rules in a headless mode, without having to set up a full-fledged web testing environment.
 
-This wrapper is still in development, and it doesn't support all features from ModSecurity.
+This wrapper is still in development, and some ModSecurity features could be missing.
 Most ModSecurity methods are implemented via [pymodsecurity](https://github.com/AvalZ/pymodsecurity) (requires manual building -- [PR](https://github.com/pymodsecurity/pymodsecurity/pull/21) pending on the [official repository](https://github.com/pymodsecurity/pymodsecurity)), 
 
 ## Getting started
