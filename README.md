@@ -26,17 +26,12 @@ Currently, this is a ~~nightmare~~tricky process, since you will need to [build 
 
 ### Install pymodsecurity
 
-(https://github.com/AvalZ/pymodsecurity#building-from-source)
 
 In `modsecurity-cli` ModSecurity methods are implemented via [pymodsecurity](https://github.com/pymodsecurity/pymodsecurity).
 Since development on the official repository stopped on ModSecurity v3.0.3, we opened a [PR](https://github.com/pymodsecurity/pymodsecurity/pull/21).
 
-Current workaround: clone [our fork](https://github.com/AvalZ/pymodsecurity) and run this (it might take a while):
-
-```
-python3 setup.py install
-```
-
+Current workaround: clone [our fork](https://github.com/AvalZ/pymodsecurity) and [build it from source](https://github.com/AvalZ/pymodsecurity#building-from-source)
+ 
 ### Clone the OWASP CoreRuleSet
 
 To detect incoming payloads, you need a Rule Set.
