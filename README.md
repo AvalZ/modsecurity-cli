@@ -133,6 +133,7 @@ Here's the list of our current and future steps:
  - [x] Score based on Paranoia Level (basic config uses PL/4, then we filter on a given PL - default: 1)
  - [x] Support POST request evaluation
  - [ ] Full URI evaluation
+ - [ ] Create Python package
  - [ ] Wiki to fully document every option
  - [ ] Integration with [regrets](https://github.com/AvalZ/regrets)
 
