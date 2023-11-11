@@ -72,7 +72,8 @@ def parameter(
         rules.loadFromUri(config)
 
     # Load rules
-    for rule_path in glob.glob(f"{rules_path}/*.conf"):
+    for rule_path in sorted(glob.glob(f"{rules_path}/*.conf")):
+        # Unsorted rules cause unexpcted behaviors for SETVAR
         rules.loadFromUri(rule_path)
 
     transaction = Transaction(modsec, rules)
