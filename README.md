@@ -141,6 +141,6 @@ If you want to contribute by adding something from the list, PRs are welcome :su
 
 ## Contributors
 
- - Andrea Valenza ([AvalZ](https://github.com/avalz)) -- avalenza89@gmail.com
- - Luca Demetrio ([zangobot](https://github.com/zangobot)) -- luca.demetrio@dibris.unige.it
+ - Andrea Valenza ([AvalZ](https://github.com/avalz)) - avalenza89@gmail.com
+ - Luca Demetrio ([zangobot](https://github.com/zangobot)) - luca.demetrio@dibris.unige.it
 
