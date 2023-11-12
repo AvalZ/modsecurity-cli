@@ -136,6 +136,7 @@ Here's the list of our current and future steps:
  - [ ] Create Python package
  - [ ] Wiki to fully document every option
  - [ ] Integration with [regrets](https://github.com/AvalZ/regrets)
+ - [ ] Response evaluation (currently supports requests only)
 
 If you want to contribute by adding something from the list, PRs are welcome :sunglasses:
 
