@@ -94,22 +94,22 @@ GET http://www.modsecurity.org/test?q=%3Cscript%3Ealert%281%29%3C%2Fscript%3E
 
 # Matched rules
 
- -  920320 [+2/PL2] - Missing User Agent Header
+ +  920320 [+2/PL2] - Missing User Agent Header
  -  920273 [+5/PL4] - Invalid character in request (outside of very strict set)
  +  941100 [+5/PL1] - XSS Attack Detected via libinjection
  +  941110 [+5/PL1] - XSS Filter - Category 1: Script Tag Vector
  +  941160 [+5/PL1] - NoScript XSS InjectionChecker: HTML Injection
  +  941390 [+5/PL1] - Javascript method detected
- -  941320 [+5/PL2] - Possible XSS Attack Detected - HTML Tag Handler
- -  942131 [+5/PL2] - SQL Injection Attack: SQL Boolean-based attack detected
+ +  941320 [+5/PL2] - Possible XSS Attack Detected - HTML Tag Handler
+ +  942131 [+5/PL2] - SQL Injection Attack: SQL Boolean-based attack detected
  -  942431 [+3/PL3] - Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (6)
  -  942432 [+3/PL4] - Restricted SQL Character Anomaly Detection (args): # of special characters exceeded (2)
  +  949110 [+0/PL1] - Inbound Anomaly Score Exceeded (Total Score: 43)
 
-Total Score (from matched rules): 20
+Total Score (from matched rules): 32
 ```
 
-WARNING! You can see that it prints two `Total Scores`. One (`20`) is calculated by matched rules (`+`), while the other one (`43`) is the error message from rule `949110` (which is calculated at Paranoia Level 4).
+WARNING! You can see that it prints two `Total Scores`. One (`32`) is calculated by matched rules (`+`), while the other one (`43`) is the error message from rule `949110` (which is calculated at Paranoia Level 4).
 
 If you don't want this message, you can either increase the Anomaly Score threshold via your `conf/crs-setup.conf`, or by removing rule `949110` file entirely (not advised).
 
